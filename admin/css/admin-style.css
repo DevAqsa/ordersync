@@ -1,0 +1,47 @@
+.ordersync-wrap {
+    margin: 20px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.ordersync-form-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ordersync-form-table th {
+    text-align: left;
+    padding: 15px 10px;
+    width: 200px;
+}
+
+.ordersync-form-table td {
+    padding: 15px 10px;
+}
+
+.ordersync-form-table input[type="text"],
+.ordersync-form-table input[type="email"],
+.ordersync-form-table input[type="number"],
+.ordersync-form-table select {
+    width: 100%;
+    max-width: 400px;
+}
+
+.ordersync-status {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.ordersync-status-new {
+    background: #e7e7e7;
+}
+
+.ordersync-status-in-progress {
+    background: #ffd866;
+}
+
+.ordersync-status-completed {
+    background: #9be7ad;
+}
