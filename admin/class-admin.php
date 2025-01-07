@@ -266,7 +266,8 @@ class OrderSync_Admin {
                         <td><?php echo esc_html(get_post_meta($order->ID, '_ordersync_status', true)); ?></td>
                         <td><?php echo get_the_date('', $order->ID); ?></td>
                         <td>
-                            <a href="<?php echo get_edit_post_link($order->ID); ?>" class="button button-small">View</a>
+                            <a href="<?php echo admin_url('admin.php?page=ordersync&action=view&id=' . $order->ID); ?>" 
+                               class="button button-small">View</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -274,6 +275,10 @@ class OrderSync_Admin {
         </table>
         <?php
     }
+
+   
+
+//------------------------------------------------------
 
     private function get_total_orders() {
         $counts = wp_count_posts('ordersync_order');
