@@ -1,5 +1,4 @@
 <?php
-// Update your class-shortcodes.php file with this code:
 
 if (!defined('ABSPATH')) {
     exit;

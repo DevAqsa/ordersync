@@ -31,6 +31,15 @@ class OrderSync_Admin {
             'ordersync-form',
             array($this, 'render_form_page')
         );
+
+        add_submenu_page(
+            'ordersync',
+            'Tracking page',
+            'Tracking page',
+            'manage_options',
+            'ordersync-form',
+            array($this, 'render_form_page')
+        );
     }
 
     public function enqueue_admin_scripts($hook) {

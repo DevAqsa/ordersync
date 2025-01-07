@@ -20,13 +20,9 @@ require_once ORDERSYNC_PLUGIN_PATH . 'admin/class-admin.php';
 require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-order-post-type.php';
 require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-meta-boxes.php';
 require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-ajax-handler.php';
-
-
-// Add this near the top with other require_once statements
 require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-shortcodes.php';
 
 
-// Add this to your ordersync_init() function
 function ordersync_init() {
     $admin = new OrderSync_Admin();
     $admin->init();
@@ -47,6 +43,12 @@ function register_ordersync_settings() {
     register_setting('ordersync_form_options', 'ordersync_allowed_file_types');
 }
 
+
+require_once plugin_dir_path(__FILE__) . 'includes/class-tracking.php';
+
+
+$tracking = new OrderSync_Tracking();
+$tracking->init();
 
 
 // Initialize plugin components

@@ -1,4 +1,4 @@
-/* Order Meta Box Styles */
+
 .ordersync-order-details {
     background: #fff;
     padding: 15px;
@@ -61,7 +61,7 @@
     max-width: 100%;
 }
 
-/* Project Files Styling */
+
 .files-list {
     margin: 0;
     padding: 0;
@@ -96,19 +96,19 @@
     margin: 0;
 }
 
-/* Status Control Styling */
+
 .status-control select {
     width: 200px;
 }
 
-/* Tracking Information Styling */
+
 .field-value code {
     background: #f6f7f7;
     padding: 3px 5px;
     border-radius: 3px;
 }
 
-/* Responsive Adjustments */
+
 @media screen and (max-width: 782px) {
     .form-row {
         flex-direction: column;

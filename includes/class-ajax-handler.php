@@ -10,7 +10,7 @@ class OrderSync_Ajax_Handler {
     }
 
     public function handle_ajax() {
-        // Verify nonce
+        
         if (!check_ajax_referer('ordersync_nonce', 'nonce', false)) {
             wp_send_json_error('Invalid nonce');
         }

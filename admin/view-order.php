@@ -1,5 +1,4 @@
 <?php
-// Create a new file: view-order.php in your plugin's admin folder
 
 if (!defined('ABSPATH')) {
     exit;
@@ -170,7 +169,7 @@ $order_data = array(
     color: #666;
 }
 </style><?php
-// Create a new file: view-order.php in your plugin's admin folder
+
 
 if (!defined('ABSPATH')) {
     exit;

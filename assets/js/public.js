@@ -1,4 +1,4 @@
-// Create this file as assets/js/public.js
+
 
 jQuery(document).ready(function($) {
     $('#ordersync-form').on('submit', function(e) {

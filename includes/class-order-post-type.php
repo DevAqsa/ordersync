@@ -28,7 +28,7 @@ function register_ordersync_post_type() {
     $args = array(
         'public' => false,
         'show_ui' => true,
-        'show_in_menu' => false, // Hide from main menu since we have our custom page
+        'show_in_menu' => false, 
         'supports' => array('title'),
         'labels' => array(
             'name' => 'Orders',

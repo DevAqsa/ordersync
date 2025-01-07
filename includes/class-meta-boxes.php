@@ -267,7 +267,7 @@ class OrderSync_Meta_Boxes {
     }
 
     public function save_meta_box_data($post_id) {
-        // Verify nonce
+      
         if (!isset($_POST['ordersync_order_details_nonce']) || 
             !wp_verify_nonce($_POST['ordersync_order_details_nonce'], 'ordersync_order_details')) {
             return;
