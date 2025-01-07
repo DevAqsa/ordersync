@@ -3,43 +3,38 @@
  * Plugin Name: OrderSync
  * Description: A plugin for managing orders and client communication
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Aqsa Mumtaz
  * License: GPL v2 or later
  */
 
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Define plugin constants
-define('ORDERSYNC_VERSION', '1.0.0');
-define('ORDERSYNC_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('ORDERSYNC_PLUGIN_URL', plugin_dir_url(__FILE__));
+// Define plugin paths
+define('ORDERSYNC_PLUGIN_PATH', plugin_dir_path(__FILE__));
 
-// Include class files
-require_once ORDERSYNC_PLUGIN_DIR . 'classes/class-admin.php';
-require_once ORDERSYNC_PLUGIN_DIR . 'classes/class-order-post-type.php';
-require_once ORDERSYNC_PLUGIN_DIR . 'classes/class-meta-boxes.php';
-require_once ORDERSYNC_PLUGIN_DIR . 'classes/class-ajax-handler.php';
+// Include required files
+require_once ORDERSYNC_PLUGIN_PATH . 'admin/class-admin.php';
+require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-order-post-type.php';
+require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-meta-boxes.php';
+require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-ajax-handler.php';
 
-// Initialize the plugin
+
+
+
+
+// Initialize plugin components
 function ordersync_init() {
-    if (is_admin()) {
-        $admin = new OrderSync_Admin();
-        $admin->init();
-    }
+    $admin = new OrderSync_Admin();
+    $admin->init();
     
     $post_type = new OrderSync_Post_Type();
     $post_type->init();
-    
-    $meta_boxes = new OrderSync_Meta_Boxes();
-    $meta_boxes->init();
-    
-    $ajax = new OrderSync_Ajax_Handler();
-    $ajax->init();
 }
 
-add_action('plugins_loaded', 'ordersync_init');
+add_action('init', 'ordersync_init');
 
 // Activation hook
 register_activation_hook(__FILE__, 'ordersync_activate');
