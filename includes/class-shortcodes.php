@@ -1,4 +1,6 @@
 <?php
+// Update your class-shortcodes.php file with this code:
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -14,7 +16,7 @@ class OrderSync_Shortcodes {
 
     public function enqueue_scripts() {
         wp_enqueue_style('ordersync-public', plugins_url('assets/css/public.css', dirname(__FILE__)));
-        wp_enqueue_script('ordersync-public', plugins_url('assets/js/public.js', dirname(__FILE__)), array('jquery'), '', true);
+        wp_enqueue_script('ordersync-public', plugins_url('assets/js/public.js', dirname(__FILE__)), array('jquery'), '1.0', true);
         
         wp_localize_script('ordersync-public', 'orderSync', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -24,13 +26,7 @@ class OrderSync_Shortcodes {
 
     public function render_order_form() {
         ob_start();
-        include ORDERSYNC_PLUGIN_PATH . 'templates/order-form.php';
-        return ob_get_clean();
-    }
-
-    public function render_tracking_page() {
-        ob_start();
-        include ORDERSYNC_PLUGIN_PATH . 'templates/tracking-page.php';
+        include_once ORDERSYNC_PLUGIN_PATH . 'templates/order-form.php';
         return ob_get_clean();
     }
 
@@ -40,22 +36,48 @@ class OrderSync_Shortcodes {
         $order_data = array(
             'post_title'   => 'Order - ' . date('Y-m-d H:i:s'),
             'post_type'    => 'ordersync_order',
-            'post_status'  => 'new'
+            'post_status'  => 'publish',
+            'meta_input'   => array(
+                '_client_name'    => sanitize_text_field($_POST['client_name']),
+                '_client_email'   => sanitize_email($_POST['client_email']),
+                '_client_phone'   => sanitize_text_field($_POST['client_phone']),
+                '_project_type'   => sanitize_text_field($_POST['project_type']),
+                '_description'    => sanitize_textarea_field($_POST['description']),
+                '_delivery_date'  => sanitize_text_field($_POST['delivery_date']),
+                '_priority'       => sanitize_text_field($_POST['priority']),
+                '_budget'         => sanitize_text_field($_POST['budget']),
+                '_ordersync_status' => 'pending'
+            )
         );
 
         $order_id = wp_insert_post($order_data);
 
         if ($order_id) {
-            // Save order details as post meta
-            $fields = array(
-                'client_name', 'client_email', 'client_phone',
-                'project_type', 'description', 'delivery_date',
-                'priority', 'budget'
-            );
+            // Handle file uploads if present
+            if (!empty($_FILES['project_files'])) {
+                $files = $_FILES['project_files'];
+                $uploaded_files = array();
 
-            foreach ($fields as $field) {
-                if (isset($_POST[$field])) {
-                    update_post_meta($order_id, '_' . $field, sanitize_text_field($_POST[$field]));
+                // Handle multiple files
+                for ($i = 0; $i < count($files['name']); $i++) {
+                    if ($files['error'][$i] === 0) {
+                        $file = array(
+                            'name'     => $files['name'][$i],
+                            'type'     => $files['type'][$i],
+                            'tmp_name' => $files['tmp_name'][$i],
+                            'error'    => $files['error'][$i],
+                            'size'     => $files['size'][$i]
+                        );
+
+                        $upload = wp_handle_upload($file, array('test_form' => false));
+                        if (!isset($upload['error'])) {
+                            $uploaded_files[] = $upload['url'];
+                        }
+                    }
+                }
+
+                if (!empty($uploaded_files)) {
+                    update_post_meta($order_id, '_project_files', $uploaded_files);
                 }
             }
 
@@ -63,28 +85,32 @@ class OrderSync_Shortcodes {
             $tracking_token = wp_generate_password(12, false);
             update_post_meta($order_id, '_tracking_token', $tracking_token);
 
-            // Handle file upload if exists
-            if (!empty($_FILES['project_files'])) {
-                require_once(ABSPATH . 'wp-admin/includes/file.php');
-                require_once(ABSPATH . 'wp-admin/includes/image.php');
-                require_once(ABSPATH . 'wp-admin/includes/media.php');
-
-                $attachment_id = media_handle_upload('project_files', $order_id);
-                if (!is_wp_error($attachment_id)) {
-                    update_post_meta($order_id, '_project_files', $attachment_id);
-                }
-            }
+            // Send email notification
+            $this->send_order_notification($order_id);
 
             wp_send_json_success(array(
                 'order_id' => $order_id,
                 'tracking_token' => $tracking_token,
-                'tracking_url' => add_query_arg(array(
-                    'order_id' => $order_id,
-                    'token' => $tracking_token
-                ), get_permalink(get_page_by_path('order-tracking')))
+                'message' => 'Order submitted successfully!'
             ));
         } else {
-            wp_send_json_error('Failed to create order');
+            wp_send_json_error('Failed to submit order');
         }
+    }
+
+    private function send_order_notification($order_id) {
+        $admin_email = get_option('admin_email');
+        $client_name = get_post_meta($order_id, '_client_name', true);
+        $project_type = get_post_meta($order_id, '_project_type', true);
+        
+        $subject = 'New Order Received - #' . $order_id;
+        
+        $message = "A new order has been submitted:\n\n";
+        $message .= "Order ID: #" . $order_id . "\n";
+        $message .= "Client Name: " . $client_name . "\n";
+        $message .= "Project Type: " . $project_type . "\n";
+        $message .= "View Order: " . admin_url('post.php?post=' . $order_id . '&action=edit') . "\n";
+        
+        wp_mail($admin_email, $subject, $message);
     }
 }

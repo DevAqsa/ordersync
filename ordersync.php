@@ -22,17 +22,41 @@ require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-meta-boxes.php';
 require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-ajax-handler.php';
 
 
+// Add this near the top with other require_once statements
+require_once ORDERSYNC_PLUGIN_PATH . 'includes/class-shortcodes.php';
 
 
-
-// Initialize plugin components
+// Add this to your ordersync_init() function
 function ordersync_init() {
     $admin = new OrderSync_Admin();
     $admin->init();
     
     $post_type = new OrderSync_Post_Type();
     $post_type->init();
+    
+    $shortcodes = new OrderSync_Shortcodes();
+    $shortcodes->init();
 }
+
+
+add_action('admin_init', 'register_ordersync_settings');
+
+function register_ordersync_settings() {
+    register_setting('ordersync_form_options', 'ordersync_enable_uploads');
+    register_setting('ordersync_form_options', 'ordersync_max_file_size');
+    register_setting('ordersync_form_options', 'ordersync_allowed_file_types');
+}
+
+
+
+// Initialize plugin components
+// function ordersync_init() {
+//     $admin = new OrderSync_Admin();
+//     $admin->init();
+    
+//     $post_type = new OrderSync_Post_Type();
+//     $post_type->init();
+// }
 
 add_action('init', 'ordersync_init');
 

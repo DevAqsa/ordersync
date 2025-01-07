@@ -1,0 +1,125 @@
+/* Order Meta Box Styles */
+.ordersync-order-details {
+    background: #fff;
+    padding: 15px;
+}
+
+.order-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.order-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.order-section h3 {
+    margin: 0 0 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e4e7;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.status-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.form-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.form-row label {
+    flex: 0 0 120px;
+    font-weight: 600;
+    padding-top: 5px;
+}
+
+.form-row .field-value {
+    flex: 1;
+}
+
+.field-value input[type="text"],
+.field-value input[type="email"],
+.field-value input[type="tel"],
+.field-value input[type="number"],
+.field-value input[type="date"],
+.field-value select,
+.field-value textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Project Files Styling */
+.files-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.files-list li {
+    margin: 5px 0;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 3px;
+}
+
+.files-list li a {
+    text-decoration: none;
+    color: #2271b1;
+    display: flex;
+    align-items: center;
+}
+
+.files-list li a:hover {
+    color: #135e96;
+}
+
+.files-list .dashicons {
+    margin-right: 5px;
+}
+
+.no-files {
+    color: #666;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Status Control Styling */
+.status-control select {
+    width: 200px;
+}
+
+/* Tracking Information Styling */
+.field-value code {
+    background: #f6f7f7;
+    padding: 3px 5px;
+    border-radius: 3px;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 782px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-row label {
+        flex: none;
+        margin-bottom: 5px;
+    }
+    
+    .status-control select {
+        width: 100%;
+    }
+}

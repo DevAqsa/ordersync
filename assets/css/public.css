@@ -1,0 +1,63 @@
+/* Create this file as assets/css/public.css */
+
+.ordersync-form-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.ordersync-form .form-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.ordersync-form .form-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.ordersync-form .form-group {
+    margin-bottom: 15px;
+}
+
+.ordersync-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.ordersync-form input[type="text"],
+.ordersync-form input[type="email"],
+.ordersync-form input[type="tel"],
+.ordersync-form input[type="number"],
+.ordersync-form input[type="date"],
+.ordersync-form select,
+.ordersync-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ordersync-form .submit-button {
+    background: #0073aa;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ordersync-form .submit-button:hover {
+    background: #005177;
+}
+
+.ordersync-form small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+}

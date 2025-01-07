@@ -16,10 +16,27 @@ class OrderSync_Post_Type {
                 'name' => 'Orders',
                 'singular_name' => 'Order'
             ),
-            'menu_icon' => 'dashicons-cart',
+            'menu_icon' => 'dashicons-controls-repeat',
             'supports' => array('title', 'editor')
         );
         
         register_post_type('ordersync_order', $args);
     }
 }
+
+function register_ordersync_post_type() {
+    $args = array(
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => false, // Hide from main menu since we have our custom page
+        'supports' => array('title'),
+        'labels' => array(
+            'name' => 'Orders',
+            'singular_name' => 'Order',
+        ),
+        'capability_type' => 'post',
+    );
+    
+    register_post_type('ordersync_order', $args);
+}
+add_action('init', 'register_ordersync_post_type');
