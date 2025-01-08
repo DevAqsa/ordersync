@@ -32,13 +32,14 @@ class OrderSync_Admin {
             array($this, 'render_form_page')
         );
 
+        // Submenu for Tracking Page
         add_submenu_page(
             'ordersync',
-            'Tracking page',
-            'Tracking page',
+            'Order Tracking',
+            'Tracking',
             'manage_options',
-            'ordersync-form',
-            array($this, 'render_form_page')
+            'ordersync-tracking',
+            array($this, 'render_tracking_page')
         );
     }
 
@@ -329,5 +330,194 @@ class OrderSync_Admin {
         } else {
             wp_send_json_error('Failed to create order form page');
         }
+    }
+
+    public function render_tracking_page() {
+        // Handle form submission
+        $order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : '';
+        $order_info = null;
+        $error_message = '';
+        
+        if ($order_id) {
+            $order = get_post($order_id);
+            if ($order && $order->post_type === 'ordersync_order') {
+                $order_info = array(
+                    'id' => $order->ID,
+                    'status' => get_post_meta($order->ID, '_ordersync_status', true),
+                    'client_name' => get_post_meta($order->ID, '_client_name', true),
+                    'project_type' => get_post_meta($order->ID, '_project_type', true),
+                    'delivery_date' => get_post_meta($order->ID, '_delivery_date', true),
+                    'priority' => get_post_meta($order->ID, '_priority', true),
+                    'created_date' => get_the_date('F j, Y', $order->ID),
+                    'last_update' => get_the_modified_date('F j, Y g:i a', $order->ID)
+                );
+            } else {
+                $error_message = 'Order not found.';
+            }
+        }
+        ?>
+        <div class="wrap ordersync-tracking-page">
+            <h1>Order Tracking</h1>
+    
+            <!-- Search Form -->
+            <div class="card">
+                <h2>Track Order</h2>
+                <form method="post" action="">
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="order_id">Order ID</label>
+                            </th>
+                            <td>
+                                <input type="number" 
+                                       name="order_id" 
+                                       id="order_id" 
+                                       value="<?php echo esc_attr($order_id); ?>" 
+                                       class="regular-text" 
+                                       required>
+                            </td>
+                        </tr>
+                    </table>
+                    <?php submit_button('Track Order'); ?>
+                </form>
+            </div>
+    
+            <?php if ($error_message): ?>
+                <div class="notice notice-error">
+                    <p><?php echo esc_html($error_message); ?></p>
+                </div>
+            <?php endif; ?>
+    
+            <?php if ($order_info): ?>
+            <!-- Order Information Display -->
+            <div class="card order-info-card">
+                <h2>Order #<?php echo esc_html($order_info['id']); ?> Details</h2>
+                
+                <div class="order-status-banner status-<?php echo esc_attr($order_info['status']); ?>">
+                    <strong>Current Status:</strong> 
+                    <span><?php echo esc_html(ucfirst($order_info['status'])); ?></span>
+                </div>
+    
+                <table class="widefat striped">
+                    <tbody>
+                        <tr>
+                            <th>Client Name</th>
+                            <td><?php echo esc_html($order_info['client_name']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Project Type</th>
+                            <td><?php echo esc_html($order_info['project_type']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Priority</th>
+                            <td><?php echo esc_html($order_info['priority']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Delivery Date</th>
+                            <td><?php echo esc_html($order_info['delivery_date']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Created Date</th>
+                            <td><?php echo esc_html($order_info['created_date']); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Last Updated</th>
+                            <td><?php echo esc_html($order_info['last_update']); ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <!-- Order Timeline -->
+                <?php
+                $comments = get_comments(array(
+                    'post_id' => $order_info['id'],
+                    'order' => 'DESC'
+                ));
+                
+                if ($comments): ?>
+                <div class="order-timeline">
+                    <h3>Order Timeline</h3>
+                    <div class="timeline-entries">
+                        <?php foreach ($comments as $comment): ?>
+                        <div class="timeline-entry">
+                            <div class="timeline-date">
+                                <?php echo get_comment_date('M j, Y g:i a', $comment->comment_ID); ?>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-author">
+                                    <?php echo esc_html($comment->comment_author); ?>:
+                                </div>
+                                <div class="timeline-message">
+                                    <?php echo wp_kses_post($comment->comment_content); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+    
+        <style>
+        .order-info-card {
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .order-status-banner {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            background-color: #f0f0f1;
+        }
+        .order-status-banner.status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .order-status-banner.status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .order-status-banner.status-in-progress {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        .timeline-entries {
+            margin-top: 20px;
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+        }
+        .timeline-entry {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .timeline-entry:before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: absolute;
+            left: -27px;
+            top: 5px;
+        }
+        .timeline-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .timeline-author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .timeline-message {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        </style>
+        <?php
     }
 }
